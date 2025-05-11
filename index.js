@@ -37,7 +37,7 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Proper dynamic import for fetch
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
