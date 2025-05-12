@@ -1,10 +1,7 @@
 // api/suggest.js
 
-const fetch = (...args) =>
-  import('node-fetch').then(({ default: fetch }) => fetch(...args));
-
 export default async function handler(req, res) {
-  const { q } = req.query;
+  const q = req.query.q;
 
   if (!q) {
     return res.status(400).json({ error: 'Missing query param `q`' });
@@ -17,19 +14,21 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       const text = await response.text();
-      console.error('Upstream API error:', response.status, text);
+      console.error('Error response from upstream:', response.status, text);
       return res.status(response.status).json({ error: 'Upstream API error' });
     }
 
     const text = await response.text();
     const json = JSON.parse(
-      text.substring(text.indexOf('['), text.lastIndexOf(']') + 1)
+      text.substring(text.indexOf("["), text.lastIndexOf("]") + 1)
     );
 
     const suggestions = json[1].map((item) => item[0]);
+
+    res.setHeader('Access-Control-Allow-Origin', '*'); // CORS fix
     res.status(200).json({ suggestions });
-  } catch (error) {
-    console.error('Fetch error:', error.message);
+  } catch (err) {
+    console.error('Fetch error:', err.message);
     res.status(500).json({ error: 'Fail to fetch suggestions' });
   }
 }
