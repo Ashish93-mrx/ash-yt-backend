@@ -1,0 +1,10 @@
+{
+    "version": 2,
+    "builds": [
+      { "src": "api/suggest.js", "use": "@vercel/node" }
+    ],
+    "routes": [
+      { "src": "/suggest", "dest": "/api/suggest.js" }
+    ]
+  }
+  
