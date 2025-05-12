@@ -1,6 +1,12 @@
-// api/suggest.js
-
 export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // ← This is the key
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end(); // Handle preflight request
+  }
+
   const q = req.query.q;
 
   if (!q) {
@@ -25,10 +31,9 @@ export default async function handler(req, res) {
 
     const suggestions = json[1].map((item) => item[0]);
 
-    res.setHeader('Access-Control-Allow-Origin', '*'); // CORS fix
-    res.status(200).json({ suggestions });
+    return res.status(200).json({ suggestions });
   } catch (err) {
     console.error('Fetch error:', err.message);
-    res.status(500).json({ error: 'Fail to fetch suggestions' });
+    return res.status(500).json({ error: 'Fail to fetch suggestions' });
   }
 }
