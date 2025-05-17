@@ -1,5 +1,14 @@
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // ← This is the key
+  const allowedOrigin = 'https://youtube-clone-three-taupe.vercel.app';
+  const origin = req.headers.origin;
+
+  if (origin === allowedOrigin) {
+    res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
+  } else {
+    res.status(403).json({ error: 'Forbidden' });
+    return;
+  }
+
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
